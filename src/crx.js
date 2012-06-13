@@ -1,5 +1,7 @@
 var fs = require("fs")
-  , join = require("path").join
+  , path = require("path")
+  , join = path.join
+  , resolve = path.resolve
   , crypto = require("crypto")
   , child = require("child_process")
   , spawn = child.spawn
@@ -10,7 +12,7 @@ module.exports = new function() {
     if (this instanceof ChromeExtension) {
       for (var name in attrs) this[name] = attrs[name]
 
-      this.path = join("/tmp", "crx-" + (Math.random() * 1e17).toString(36))
+      this.path = resolve(join("tmp", "crx-" + (Math.random() * 1e17).toString(36)))
     }
 
     else return new ChromeExtension(attrs)
@@ -34,7 +36,7 @@ module.exports = new function() {
 
       this.writeFile("manifest.json", manifest, function(err) {
         if (err) return cb(err)
-        
+
         this.loadContents(function(err) {
           if (err) return cb(err)
 
@@ -112,7 +114,7 @@ module.exports = new function() {
       cb.call(this)
     }.bind(this))
   }
-  
+
   this.generatePackage = function() {
     var signature = this.signature
       , publicKey = this.publicKey
